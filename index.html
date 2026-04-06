@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Uniformes da Turma</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;
+  --surface:#fff;
+  --border:#e2e0d8;
+  --text:#1a1917;
+  --muted:#6b6963;
+  --blue:#1546c8;
+  --blue-light:#eef2ff;
+  --red:#c82015;
+  --red-light:#fdf2f1;
+  --green:#157a3c;
+  --green-light:#edfaf3;
+  --amber:#b45309;
+  --amber-light:#fffbeb;
+  --radius:12px;
+  --radius-sm:8px;
+}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+}
+.phone{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  background:var(--surface);
+  position:relative;
+  overflow-x:hidden;
+}
+.screen{display:none;flex-direction:column;min-height:100vh;padding:28px 22px 40px}
+.screen.active{display:flex}
+
+/* Typography */
+.logo{font-size:24px;font-weight:600;color:var(--text);letter-spacing:-0.5px}
+.logo span{color:var(--blue)}
+.subtitle{font-size:14px;color:var(--muted);margin-top:4px;line-height:1.5}
+.section-title{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-0.3px}
+
+/* Back button */
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--blue);cursor:pointer;background:none;border:none;padding:0;margin-bottom:22px;font-family:inherit}
+.back-btn::before{content:'←'}
+
+/* Fields */
+.field-label{font-size:12px;font-weight:500;color:var(--muted);margin-top:16px;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em}
+input,select,textarea{
+  width:100%;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:12px 14px;
+  font-size:15px;
+  color:var(--text);
+  background:var(--surface);
+  font-family:'DM Sans',sans-serif;
+  transition:border-color 0.15s;
+  -webkit-appearance:none;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue)}
+textarea{resize:none;min-height:80px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b6963' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+
+/* Buttons */
+.btn{width:100%;padding:14px;border-radius:var(--radius-sm);font-size:15px;font-weight:500;cursor:pointer;border:none;margin-top:14px;font-family:'DM Sans',sans-serif;transition:all 0.15s;letter-spacing:-0.1px}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#1240b0}
+.btn-secondary{background:var(--bg);color:var(--text);border:1.5px solid var(--border)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-sm{padding:9px 16px;font-size:13px;width:auto}
+
+/* Alerts */
+.alert{padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;margin-top:12px;line-height:1.5;border:1px solid transparent}
+.alert-warn{background:var(--amber-light);color:var(--amber);border-color:#fde68a}
+.alert-info{background:var(--blue-light);color:var(--blue)}
+.alert-success{background:var(--green-light);color:var(--green)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.badge-blue{background:var(--blue-light);color:var(--blue)}
+.badge-red{background:var(--red-light);color:var(--red)}
+.badge-green{background:var(--green-light);color:var(--green)}
+.badge-amber{background:var(--amber-light);color:var(--amber)}
+
+/* Divider */
+.divider{height:1px;background:var(--border);margin:18px 0}
+
+/* ---- TELA CADASTRO ---- */
+.brand-mark{width:48px;height:48px;border-radius:14px;background:var(--blue);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.brand-mark svg{width:28px;height:28px}
+
+/* ---- TELA ESCOLHA ---- */
+.uniform-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.uniform-card{
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px 14px;
+  cursor:pointer;
+  text-align:center;
+  transition:all 0.2s;
+  background:var(--surface);
+}
+.uniform-card:hover,.uniform-card:active{border-color:var(--blue);background:var(--blue-light)}
+.uniform-card .card-icon{margin-bottom:12px;display:flex;justify-content:center}
+.uniform-card .card-name{font-size:15px;font-weight:600;color:var(--text)}
+.uniform-card .card-price{font-size:13px;color:var(--muted);margin-top:3px}
+
+/* ---- TELA PEDIDO ---- */
+.uniform-preview{
+  width:130px;height:160px;
+  margin:18px auto;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius);
+  border:1.5px solid var(--border);
+  background:var(--bg);
+}
+.gender-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.gender-btn{
+  padding:11px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  font-size:14px;
+  font-weight:500;
+  background:var(--surface);
+  color:var(--text);
+  transition:all 0.15s;
+  font-family:'DM Sans',sans-serif;
+}
+.gender-btn.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
+.size-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.size-btn{
+  padding:9px 16px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  font-size:13px;
+  font-weight:500;
+  background:var(--surface);
+  color:var(--text);
+  transition:all 0.15s;
+  font-family:'DM Sans',sans-serif;
+}
+.size-btn.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
+.number-status{margin-top:8px;padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;display:none;font-weight:500}
+.number-status.ok{background:var(--green-light);color:var(--green);display:block}
+.number-status.taken{background:var(--red-light);color:var(--red);display:block}
+
+/* ---- TELA PAGAMENTO ---- */
+.timer-wrap{margin-top:16px}
+.timer-bar{height:8px;border-radius:4px;background:var(--bg);overflow:hidden;border:1px solid var(--border)}
+.timer-fill{height:100%;border-radius:4px;background:var(--blue);transition:width 1s linear}
+.timer-label{font-size:12px;font-weight:500;color:var(--muted);margin-top:5px;text-align:right;font-family:'DM Mono',monospace}
+.pix-box{border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;margin-top:14px}
+.pix-key{font-size:13px;color:var(--muted);word-break:break-all;margin:6px 0 12px;font-family:'DM Mono',monospace;background:var(--bg);padding:8px 10px;border-radius:var(--radius-sm)}
+.copy-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.copy-btn:hover{border-color:var(--blue);color:var(--blue)}
+.qr-wrapper{text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.qr-wrapper img{width:150px;height:150px;border-radius:var(--radius-sm);display:block;margin:0 auto}
+.price-tag{font-size:28px;font-weight:600;color:var(--blue);margin:14px 0 0;letter-spacing:-0.5px;font-family:'DM Mono',monospace}
+.file-upload{
+  border:1.5px dashed var(--border);
+  border-radius:var(--radius-sm);
+  padding:22px;
+  text-align:center;
+  cursor:pointer;
+  color:var(--muted);
+  font-size:14px;
+  margin-top:6px;
+  transition:all 0.15s;
+}
+.file-upload:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
+.comp-preview{margin-top:8px;padding:10px 14px;border-radius:var(--radius-sm);background:var(--green-light);color:var(--green);font-size:13px;font-weight:500;display:none}
+
+/* ---- TELA SUCESSO ---- */
+.success-icon{width:80px;height:80px;border-radius:50%;background:var(--green-light);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 24px}
+.resumo-box{border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:16px}
+.resumo-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px}
+.resumo-row:last-child{border-bottom:none}
+.resumo-row .rk{color:var(--muted);font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em}
+.resumo-row .rv{color:var(--text);font-weight:500;text-align:right}
+
+/* ---- ADMIN ---- */
+.tab-row{display:flex;gap:0;border-bottom:1.5px solid var(--border);margin-bottom:18px}
+.tab{padding:10px 18px;font-size:14px;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:2.5px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif;transition:all 0.15s;margin-bottom:-1.5px}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.pedido-card{border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.pedido-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:8px}
+.pedido-card-name{font-size:15px;font-weight:600;color:var(--text)}
+.pedido-card-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.pedido-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.pedido-edit-grid .field-label{margin-top:0}
+.pedido-edit-grid input,.pedido-edit-grid select{font-size:13px;padding:8px 10px}
+.pedido-actions{display:flex;gap:8px}
+.num-chip{padding:6px 12px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid}
+.num-chip.confirmado{background:var(--green-light);color:var(--green);border-color:#86efac}
+.num-chip.reservado{background:var(--amber-light);color:var(--amber);border-color:#fcd34d}
+.num-label{font-size:10px;color:var(--muted);text-align:center;margin-top:2px}
+.nums-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.admin-header .section-title{margin:0}
+.logout-btn{font-size:13px;color:var(--red);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;font-weight:500}
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+
+<!-- TELA 1: CADASTRO -->
+<div class="screen active" id="screen-cadastro">
+  <div class="brand-mark">
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="7" y="4" width="14" height="18" rx="2" fill="white" opacity="0.9"/>
+      <rect x="7" y="4" width="14" height="6" rx="2" fill="white"/>
+      <line x1="14" y1="4" x2="14" y2="10" stroke="#1546c8" stroke-width="1.5"/>
+      <rect x="10" y="22" width="4" height="6" rx="1.5" fill="white" opacity="0.9"/>
+      <rect x="14" y="22" width="4" height="6" rx="1.5" fill="white" opacity="0.9"/>
+    </svg>
+  </div>
+  <div class="logo">Uniformes<span>.</span></div>
+  <div class="subtitle">Sistema de pedido de uniforme da turma. Preencha seus dados para começar.</div>
+  <div class="divider"></div>
+  <div class="field-label">RGM</div>
+  <input type="text" id="inp-rgm" placeholder="Ex: 802418" inputmode="numeric" maxlength="20">
+  <div class="field-label">Nome completo</div>
+  <input type="text" id="inp-nome" placeholder="Seu nome completo" autocomplete="name">
+  <div class="field-label">E-mail</div>
+  <input type="email" id="inp-email" placeholder="rgm@alunos.unigran.br" autocomplete="email" inputmode="email">
+  <div id="cad-erro" class="alert alert-warn" style="display:none"></div>
+  <button class="btn btn-primary" onclick="irParaEscolha()" style="margin-top:24px">Continuar →</button>
+  <button class="btn btn-secondary" onclick="irPara('screen-admin-login')" style="margin-top:10px">Área do administrador</button>
+</div>
+
+<!-- TELA 2: ESCOLHA -->
+<div class="screen" id="screen-escolha">
+  <button class="back-btn" onclick="irPara('screen-cadastro')">Voltar</button>
+  <div class="section-title">Escolha o uniforme</div>
+  <div class="subtitle" style="margin-top:6px">Selecione o modelo que deseja encomendar</div>
+  <div class="uniform-grid">
+    <div class="uniform-card" onclick="escolherUniforme('basquete')">
+      <div class="card-icon">
+        <svg width="72" height="90" viewBox="0 0 72 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="6" width="44" height="56" rx="5" fill="#1546c8"/>
+          <rect x="14" y="6" width="44" height="18" rx="5" fill="#0f37a0"/>
+          <line x1="36" y1="6" x2="36" y2="24" stroke="white" stroke-width="2"/>
+          <text x="36" y="50" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="DM Sans, sans-serif">BASK</text>
+          <rect x="22" y="62" width="10" height="22" rx="3" fill="#1546c8"/>
+          <rect x="40" y="62" width="10" height="22" rx="3" fill="#1546c8"/>
+        </svg>
+      </div>
+      <div class="card-name">Basquete</div>
+      <div class="card-price" id="price-card-bask">R$ 89,90</div>
+    </div>
+    <div class="uniform-card" onclick="escolherUniforme('volei')">
+      <div class="card-icon">
+        <svg width="72" height="90" viewBox="0 0 72 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="6" width="44" height="56" rx="5" fill="#c82015"/>
+          <rect x="14" y="6" width="44" height="18" rx="5" fill="#991810"/>
+          <line x1="36" y1="6" x2="36" y2="24" stroke="white" stroke-width="2"/>
+          <text x="36" y="50" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="DM Sans, sans-serif">VÔLEI</text>
+          <rect x="14" y="62" width="44" height="22" rx="3" fill="#c82015"/>
+          <line x1="28" y1="62" x2="28" y2="84" stroke="#991810" stroke-width="1.5"/>
+          <line x1="44" y1="62" x2="44" y2="84" stroke="#991810" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="card-name">Vôlei</div>
+      <div class="card-price" id="price-card-vol">R$ 89,90</div>
+    </div>
+  </div>
+  <div class="alert alert-info" style="margin-top:20px">Toque no modelo desejado para ver os detalhes e fazer seu pedido.</div>
+</div>
+
+<!-- TELA 3: PEDIDO -->
+<div class="screen" id="screen-pedido">
+  <button class="back-btn" onclick="irPara('screen-escolha')">Voltar</button>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+    <div class="section-title" id="pedido-titulo">Uniforme</div>
+    <span class="badge" id="pedido-badge"></span>
+  </div>
+  <div class="uniform-preview" id="pedido-preview"></div>
+  <div class="field-label">Nome que vai no uniforme</div>
+  <input type="text" id="inp-nome-uni" placeholder="Ex: SILVA" style="text-transform:uppercase" oninput="checarPronto()">
+  <div class="field-label">Corte</div>
+  <div class="gender-row">
+    <button class="gender-btn" id="gen-m" onclick="selecionarGenero('M')">Masculino</button>
+    <button class="gender-btn" id="gen-f" onclick="selecionarGenero('F')">Feminino</button>
+  </div>
+  <div class="field-label">Tamanho</div>
+  <div class="size-row">
+    <button class="size-btn" onclick="selecionarTamanho(this,'PP')">PP</button>
+    <button class="size-btn" onclick="selecionarTamanho(this,'P')">P</button>
+    <button class="size-btn" onclick="selecionarTamanho(this,'M')">M</button>
+    <button class="size-btn" onclick="selecionarTamanho(this,'G')">G</button>
+    <button class="size-btn" onclick="selecionarTamanho(this,'GG')">GG</button>
+    <button class="size-btn" onclick="selecionarTamanho(this,'XGG')">XGG</button>
+  </div>
+  <div class="field-label">Número (0 a 99)</div>
+  <input type="number" id="inp-numero" min="0" max="99" placeholder="Ex: 10" inputmode="numeric" oninput="verificarNumero()">
+  <div id="num-status" class="number-status"></div>
+  <div id="pedido-erro" class="alert alert-warn" style="display:none"></div>
+  <button class="btn btn-primary" id="btn-pagar" style="display:none;margin-top:20px" onclick="irParaPagamento()">Reservar e pagar →</button>
+</div>
+
+<!-- TELA 4: PAGAMENTO -->
+<div class="screen" id="screen-pagamento">
+  <div class="section-title">Pagamento</div>
+  <div class="subtitle" style="margin-top:4px">Pague via Pix e envie o comprovante para garantir seu número</div>
+  <div class="timer-wrap">
+    <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+    <div class="timer-label" id="timer-label">5:00 restantes</div>
+  </div>
+  <div id="timer-warn" class="alert alert-warn" style="display:none;margin-top:8px">⚠ Tempo quase esgotando! Envie o comprovante agora.</div>
+  <div class="pix-box">
+    <div style="font-size:13px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">Chave Pix</div>
+    <div class="pix-key">marceloaugustocapassocosta@gmail.com</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="copy-btn" onclick="copiarPix()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copiar chave
+      </button>
+      <span id="copied-msg" style="font-size:13px;color:var(--green);font-weight:500;display:none">✓ Copiado!</span>
+    </div>
+    <div class="qr-wrapper">
+      <div style="font-size:12px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">ou escaneie o QR Code</div>
+      <img id="qr-img" src="qr_meu_pix.jpg" alt="QR Code Pix" onerror="this.style.display='none';document.getElementById('qr-err').style.display='block'">
+      <div id="qr-err" style="display:none;font-size:13px;color:var(--muted);padding:20px 0">QR Code não disponível</div>
+    </div>
+  </div>
+  <div class="price-tag" id="price-display">R$ 89,90</div>
+  <div style="margin-top:4px;font-size:13px;color:var(--muted)">valor por uniforme</div>
+  <div class="field-label">Comprovante de pagamento</div>
+  <div class="file-upload" onclick="document.getElementById('comp-file').click()">
+    <input type="file" id="comp-file" accept="image/*,application/pdf" style="display:none" onchange="comprovanteSelecionado(this)">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 8px;display:block"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Toque para selecionar o comprovante<br><span style="font-size:12px;color:var(--muted)">JPG, PNG ou PDF</span>
+  </div>
+  <div class="comp-preview" id="comp-preview"></div>
+  <div id="pag-erro" class="alert alert-warn" style="display:none"></div>
+  <button class="btn btn-primary" id="btn-confirmar" style="display:none;margin-top:16px" onclick="confirmarPedido()">Confirmar pagamento ✓</button>
+</div>
+
+<!-- TELA 5: SUCESSO -->
+<div class="screen" id="screen-sucesso">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;padding:20px 0">
+    <div class="success-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <path d="M8 20L17 29L32 12" stroke="#157a3c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div style="font-size:22px;font-weight:600;color:var(--text);letter-spacing:-0.4px">Pedido registrado!</div>
+    <div style="font-size:14px;color:var(--muted);margin-top:8px;line-height:1.6">Seu comprovante foi recebido e o número está reservado. Aguarde a confirmação do administrador.</div>
+    <div class="resumo-box" id="resumo-box" style="text-align:left;margin-top:24px"></div>
+  </div>
+  <button class="btn btn-secondary" onclick="reiniciar()">Fazer novo pedido</button>
+</div>
+
+<!-- TELA 6: ADMIN LOGIN -->
+<div class="screen" id="screen-admin-login">
+  <button class="back-btn" onclick="irPara('screen-cadastro')">Voltar</button>
+  <div class="section-title">Administrador</div>
+  <div class="subtitle" style="margin-top:6px">Acesso restrito</div>
+  <div class="field-label">Senha</div>
+  <input type="password" id="inp-admin-senha" placeholder="••••••" onkeydown="if(event.key==='Enter')loginAdmin()">
+  <div id="admin-login-erro" class="alert alert-warn" style="display:none"></div>
+  <button class="btn btn-primary" onclick="loginAdmin()" style="margin-top:20px">Entrar</button>
+</div>
+
+<!-- TELA 7: PAINEL ADMIN -->
+<div class="screen" id="screen-admin">
+  <div class="admin-header">
+    <div class="section-title">Painel Admin</div>
+    <button class="logout-btn" onclick="irPara('screen-cadastro')">Sair</button>
+  </div>
+  <div class="tab-row">
+    <button class="tab active" onclick="mudaTab('pedidos',this)">Pedidos</button>
+    <button class="tab" onclick="mudaTab('numeros',this)">Números</button>
+    <button class="tab" onclick="mudaTab('config',this)">Config</button>
+  </div>
+  <div id="tab-pedidos"><div id="lista-pedidos"></div></div>
+  <div id="tab-numeros" style="display:none">
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Basquete</div>
+    <div class="nums-grid" id="nums-basquete"></div>
+    <div class="divider"></div>
+    <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px">Vôlei</div>
+    <div class="nums-grid" id="nums-volei"></div>
+  </div>
+  <div id="tab-config" style="display:none">
+    <div class="field-label">Preço do uniforme (R$)</div>
+    <input type="number" id="cfg-preco" step="0.01" min="0">
+    <div class="field-label">Tempo de reserva (minutos)</div>
+    <input type="number" id="cfg-tempo" min="1" max="60">
+    <div class="field-label">Nova senha de admin</div>
+    <input type="password" id="cfg-senha" placeholder="deixe em branco para manter">
+    <button class="btn btn-primary" onclick="salvarConfig()">Salvar configurações</button>
+    <div class="divider"></div>
+    <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px">Exportar dados</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Baixe a tabela completa de pedidos em formato CSV compatível com Excel.</div>
+    <button class="btn btn-secondary" onclick="exportarCSV()">⬇ Exportar planilha CSV</button>
+    <div class="divider"></div>
+    <div style="font-size:14px;font-weight:500;color:var(--red);margin-bottom:6px">Zona de perigo</div>
+    <button class="btn btn-danger" onclick="limparTodos()">Apagar todos os pedidos</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const PIX_KEY='marceloaugustocapassocosta@gmail.com';
+let state={
+  usuario:{},
+  uniforme:'',
+  genero:'',
+  tamanho:'',
+  numero:null,
+  comprovante:null,
+  timerInterval:null,
+  timerSeg:300,
+  pedidos:JSON.parse(localStorage.getItem('up_pedidos')||'[]'),
+  reservados:JSON.parse(localStorage.getItem('up_reservados')||'{"basquete":{},"volei":{}}'),
+  config:JSON.parse(localStorage.getItem('up_config')||'{"preco":89.90,"tempo":5,"senha":"ma25+8-951"}')
+};
+
+function salvar(){
+  localStorage.setItem('up_pedidos',JSON.stringify(state.pedidos));
+  localStorage.setItem('up_reservados',JSON.stringify(state.reservados));
+  localStorage.setItem('up_config',JSON.stringify(state.config));
+}
+
+function irPara(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function irParaEscolha(){
+  const rgm=document.getElementById('inp-rgm').value.trim();
+  const nome=document.getElementById('inp-nome').value.trim();
+  const email=document.getElementById('inp-email').value.trim();
+  const err=document.getElementById('cad-erro');
+  if(!rgm||!nome||!email){err.style.display='block';err.textContent='Preencha todos os campos.';return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.style.display='block';err.textContent='E-mail inválido.';return;}
+  err.style.display='none';
+  state.usuario={rgm,nome,email};
+  // Atualizar preços nos cards
+  const p='R$ '+state.config.preco.toFixed(2).replace('.',',');
+  document.getElementById('price-card-bask').textContent=p;
+  document.getElementById('price-card-vol').textContent=p;
+  irPara('screen-escolha');
+}
+
+function escolherUniforme(tipo){
+  state.uniforme=tipo;
+  state.genero='';state.tamanho='';state.numero=null;state.comprovante=null;
+  document.getElementById('gen-m').classList.remove('selected');
+  document.getElementById('gen-f').classList.remove('selected');
+  document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('inp-nome-uni').value='';
+  document.getElementById('inp-numero').value='';
+  document.getElementById('num-status').className='number-status';
+  document.getElementById('btn-pagar').style.display='none';
+  document.getElementById('pedido-erro').style.display='none';
+
+  if(tipo==='basquete'){
+    document.getElementById('pedido-titulo').textContent='Basquete';
+    document.getElementById('pedido-badge').textContent='Azul';
+    document.getElementById('pedido-badge').className='badge badge-blue';
+    document.getElementById('pedido-preview').innerHTML=`<svg width="90" height="110" viewBox="0 0 72 90" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="6" width="44" height="56" rx="5" fill="#1546c8"/><rect x="14" y="6" width="44" height="18" rx="5" fill="#0f37a0"/><line x1="36" y1="6" x2="36" y2="24" stroke="white" stroke-width="2"/><text x="36" y="50" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="DM Sans, sans-serif">BASK</text><rect x="22" y="62" width="10" height="22" rx="3" fill="#1546c8"/><rect x="40" y="62" width="10" height="22" rx="3" fill="#1546c8"/></svg>`;
+  } else {
+    document.getElementById('pedido-titulo').textContent='Vôlei';
+    document.getElementById('pedido-badge').textContent='Vermelho';
+    document.getElementById('pedido-badge').className='badge badge-red';
+    document.getElementById('pedido-preview').innerHTML=`<svg width="90" height="110" viewBox="0 0 72 90" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="6" width="44" height="56" rx="5" fill="#c82015"/><rect x="14" y="6" width="44" height="18" rx="5" fill="#991810"/><line x1="36" y1="6" x2="36" y2="24" stroke="white" stroke-width="2"/><text x="36" y="50" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="DM Sans, sans-serif">VÔLEI</text><rect x="14" y="62" width="44" height="22" rx="3" fill="#c82015"/><line x1="28" y1="62" x2="28" y2="84" stroke="#991810" stroke-width="1.5"/><line x1="44" y1="62" x2="44" y2="84" stroke="#991810" stroke-width="1.5"/></svg>`;
+  }
+  irPara('screen-pedido');
+}
+
+function selecionarGenero(g){
+  state.genero=g;
+  document.getElementById('gen-m').classList.toggle('selected',g==='M');
+  document.getElementById('gen-f').classList.toggle('selected',g==='F');
+  checarPronto();
+}
+
+function selecionarTamanho(btn,t){
+  state.tamanho=t;
+  document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  checarPronto();
+}
+
+function verificarNumero(){
+  const val=parseInt(document.getElementById('inp-numero').value);
+  const st=document.getElementById('num-status');
+  if(isNaN(val)||val<0||val>99){st.className='number-status';state.numero=null;checarPronto();return;}
+  limparExpirados();
+  const res=state.reservados[state.uniforme];
+  if(res[val]&&res[val].status==='confirmado'){
+    st.className='number-status taken';
+    st.textContent=`Número ${val} já está reservado por outro aluno.`;
+    state.numero=null;
+  } else {
+    st.className='number-status ok';
+    st.textContent=`Número ${val} disponível! ✓`;
+    state.numero=val;
+  }
+  checarPronto();
+}
+
+function checarPronto(){
+  const nome=document.getElementById('inp-nome-uni').value.trim();
+  const ok=state.genero&&state.tamanho&&state.numero!==null&&nome;
+  document.getElementById('btn-pagar').style.display=ok?'block':'none';
+}
+
+function limparExpirados(){
+  const agora=Date.now();
+  let mudou=false;
+  Object.keys(state.reservados).forEach(tipo=>{
+    Object.keys(state.reservados[tipo]).forEach(num=>{
+      const r=state.reservados[tipo][num];
+      if(r.status==='reservado'&&r.expira&&agora>r.expira){delete state.reservados[tipo][num];mudou=true;}
+    });
+  });
+  if(mudou)salvar();
+}
+
+function irParaPagamento(){
+  const err=document.getElementById('pedido-erro');
+  const nome=document.getElementById('inp-nome-uni').value.trim().toUpperCase();
+  if(!nome||!state.genero||!state.tamanho||state.numero===null){err.style.display='block';err.textContent='Preencha todos os campos.';return;}
+  limparExpirados();
+  const res=state.reservados[state.uniforme];
+  if(res[state.numero]&&res[state.numero].status==='confirmado'){err.style.display='block';err.textContent='Este número acabou de ser reservado. Escolha outro.';return;}
+  err.style.display='none';
+  state.nomeUni=nome;
+  res[state.numero]={status:'reservado',rgm:state.usuario.rgm,expira:Date.now()+state.config.tempo*60*1000};
+  salvar();
+  document.getElementById('price-display').textContent='R$ '+state.config.preco.toFixed(2).replace('.',',');
+  document.getElementById('comp-preview').style.display='none';
+  document.getElementById('btn-confirmar').style.display='none';
+  document.getElementById('pag-erro').style.display='none';
+  document.getElementById('comp-file').value='';
+  document.getElementById('timer-warn').style.display='none';
+  state.comprovante=null;
+  iniciarTimer();
+  irPara('screen-pagamento');
+}
+
+function iniciarTimer(){
+  if(state.timerInterval)clearInterval(state.timerInterval);
+  state.timerSeg=state.config.tempo*60;
+  atualizarTimer();
+  state.timerInterval=setInterval(()=>{
+    state.timerSeg--;
+    atualizarTimer();
+    if(state.timerSeg===60)document.getElementById('timer-warn').style.display='block';
+    if(state.timerSeg<=0){clearInterval(state.timerInterval);expirarReserva();}
+  },1000);
+}
+
+function atualizarTimer(){
+  const m=Math.floor(state.timerSeg/60);
+  const s=state.timerSeg%60;
+  const pct=(state.timerSeg/(state.config.tempo*60)*100);
+  document.getElementById('timer-label').textContent=m+':'+(s<10?'0':'')+s+' restantes';
+  const fill=document.getElementById('timer-fill');
+  fill.style.width=pct+'%';
+  fill.style.background=state.timerSeg<60?'#c82015':'#1546c8';
+}
+
+function expirarReserva(){
+  const tipo=state.uniforme;const num=state.numero;
+  if(state.reservados[tipo][num]&&state.reservados[tipo][num].status==='reservado'){delete state.reservados[tipo][num];salvar();}
+  const err=document.getElementById('pag-erro');
+  err.style.display='block';err.textContent='Tempo esgotado! Sua reserva foi cancelada. Volte e escolha outro número.';
+  document.getElementById('btn-confirmar').style.display='none';
+}
+
+function copiarPix(){
+  navigator.clipboard.writeText(PIX_KEY).then(()=>{
+    const m=document.getElementById('copied-msg');m.style.display='inline';
+    setTimeout(()=>m.style.display='none',2500);
+  }).catch(()=>alert('Copie manualmente: '+PIX_KEY));
+}
+
+function comprovanteSelecionado(input){
+  if(!input.files[0])return;
+  state.comprovante=input.files[0];
+  const prev=document.getElementById('comp-preview');
+  prev.style.display='block';
+  prev.textContent='✓ Arquivo selecionado: '+input.files[0].name;
+  document.getElementById('btn-confirmar').style.display='block';
+}
+
+function confirmarPedido(){
+  if(!state.comprovante){document.getElementById('pag-erro').style.display='block';document.getElementById('pag-erro').textContent='Envie o comprovante antes de confirmar.';return;}
+  if(state.timerSeg<=0){document.getElementById('pag-erro').style.display='block';document.getElementById('pag-erro').textContent='Tempo esgotado. Volte e escolha novamente.';return;}
+  clearInterval(state.timerInterval);
+  const tipo=state.uniforme;const num=state.numero;
+  state.reservados[tipo][num]={status:'confirmado',rgm:state.usuario.rgm,nome:state.usuario.nome};
+  const pedido={
+    id:'P'+Date.now(),
+    data:new Date().toLocaleDateString('pt-BR'),
+    hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    rgm:state.usuario.rgm,
+    nome:state.usuario.nome,
+    email:state.usuario.email,
+    uniforme:tipo,
+    nomeUniforme:state.nomeUni,
+    genero:state.genero==='M'?'Masculino':'Feminino',
+    tamanho:state.tamanho,
+    numero:num,
+    status:'aguardando',
+    comprovante:state.comprovante.name,
+    preco:state.config.preco
+  };
+  state.pedidos.push(pedido);salvar();
+  document.getElementById('resumo-box').innerHTML=`
+    <div class="resumo-row"><span class="rk">Aluno</span><span class="rv">${pedido.nome}</span></div>
+    <div class="resumo-row"><span class="rk">RGM</span><span class="rv">${pedido.rgm}</span></div>
+    <div class="resumo-row"><span class="rk">Uniforme</span><span class="rv">${tipo==='basquete'?'Basquete':'Vôlei'} · ${pedido.genero} · ${pedido.tamanho}</span></div>
+    <div class="resumo-row"><span class="rk">Número</span><span class="rv">#${num} — ${pedido.nomeUniforme}</span></div>
+    <div class="resumo-row"><span class="rk">Valor</span><span class="rv" style="color:var(--blue);font-size:16px">R$ ${pedido.preco.toFixed(2).replace('.',',')}</span></div>
+  `;
+  irPara('screen-sucesso');
+}
+
+function reiniciar(){
+  ['inp-rgm','inp-nome','inp-email'].forEach(id=>document.getElementById(id).value='');
+  state.usuario={};state.uniforme='';state.comprovante=null;
+  irPara('screen-cadastro');
+}
+
+function loginAdmin(){
+  const s=document.getElementById('inp-admin-senha').value;
+  const err=document.getElementById('admin-login-erro');
+  if(s!==state.config.senha){err.style.display='block';err.textContent='Senha incorreta.';return;}
+  err.style.display='none';
+  document.getElementById('cfg-preco').value=state.config.preco;
+  document.getElementById('cfg-tempo').value=state.config.tempo;
+  renderAdmin();
+  irPara('screen-admin');
+}
+
+function mudaTab(tab,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  ['pedidos','numeros','config'].forEach(t=>document.getElementById('tab-'+t).style.display='none');
+  document.getElementById('tab-'+tab).style.display='block';
+  if(tab==='numeros')renderNumeros();
+}
+
+function renderAdmin(){
+  limparExpirados();
+  const lista=document.getElementById('lista-pedidos');
+  if(!state.pedidos.length){lista.innerHTML='<div style="text-align:center;padding:32px 0;color:var(--muted);font-size:14px">Nenhum pedido ainda.</div>';return;}
+  lista.innerHTML=[...state.pedidos].reverse().map((p,ri)=>{
+    const i=state.pedidos.length-1-ri;
+    const statusBadge=p.status==='confirmado'?'badge-green':p.status==='recusado'?'badge-red':'badge-amber';
+    const statusLabel=p.status==='confirmado'?'Confirmado':p.status==='recusado'?'Recusado':'Aguardando';
+    return `<div class="pedido-card">
+      <div class="pedido-card-header">
+        <div><div class="pedido-card-name">${p.nome}</div><div class="pedido-card-meta">RGM ${p.rgm} · ${p.data} ${p.hora}</div></div>
+        <span class="badge ${statusBadge}">${statusLabel}</span>
+      </div>
+      <div class="pedido-edit-grid">
+        <div><div class="field-label">Uniforme</div>
+          <select onchange="editarPedido(${i},'uniforme',this.value)">
+            <option value="basquete" ${p.uniforme==='basquete'?'selected':''}>Basquete</option>
+            <option value="volei" ${p.uniforme==='volei'?'selected':''}>Vôlei</option>
+          </select></div>
+        <div><div class="field-label">Número</div>
+          <input type="number" value="${p.numero}" min="0" max="99" onchange="editarNumeroAdmin(${i},this.value)"></div>
+        <div><div class="field-label">Nome no uniforme</div>
+          <input value="${p.nomeUniforme}" onchange="editarPedido(${i},'nomeUniforme',this.value.toUpperCase())"></div>
+        <div><div class="field-label">Tamanho</div>
+          <select onchange="editarPedido(${i},'tamanho',this.value)">
+            ${['PP','P','M','G','GG','XGG'].map(s=>`<option ${p.tamanho===s?'selected':''}>${s}</option>`).join('')}
+          </select></div>
+        <div><div class="field-label">Gênero</div>
+          <select onchange="editarPedido(${i},'genero',this.value)">
+            <option ${p.genero==='Masculino'?'selected':''}>Masculino</option>
+            <option ${p.genero==='Feminino'?'selected':''}>Feminino</option>
+          </select></div>
+        <div><div class="field-label">E-mail</div>
+          <input type="email" value="${p.email}" onchange="editarPedido(${i},'email',this.value)"></div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Comprovante: ${p.comprovante||'—'} · R$ ${p.preco.toFixed(2).replace('.',',')}</div>
+      <div class="pedido-actions">
+        ${p.status!=='confirmado'?`<button class="btn btn-primary btn-sm" style="margin:0;flex:1" onclick="mudarStatus(${i},'confirmado')">✓ Confirmar</button>`:''}
+        ${p.status!=='recusado'?`<button class="btn btn-danger btn-sm" style="margin:0;flex:1" onclick="mudarStatus(${i},'recusado')">✗ Recusar</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function editarPedido(i,campo,val){state.pedidos[i][campo]=val;salvar();}
+
+function editarNumeroAdmin(i,val){
+  const numNovo=parseInt(val);const p=state.pedidos[i];
+  if(isNaN(numNovo)||numNovo<0||numNovo>99)return;
+  const outroOwner=state.reservados[p.uniforme][numNovo];
+  if(outroOwner&&outroOwner.status==='confirmado'&&outroOwner.rgm!==p.rgm){alert('Número já ocupado por outro aluno.');return;}
+  if(state.reservados[p.uniforme][p.numero]&&state.reservados[p.uniforme][p.numero].rgm===p.rgm)delete state.reservados[p.uniforme][p.numero];
+  state.pedidos[i].numero=numNovo;
+  if(p.status==='confirmado')state.reservados[p.uniforme][numNovo]={status:'confirmado',rgm:p.rgm,nome:p.nome};
+  salvar();
+}
+
+function mudarStatus(i,novoStatus){
+  const p=state.pedidos[i];
+  if(novoStatus==='recusado'){
+    if(state.reservados[p.uniforme][p.numero]&&state.reservados[p.uniforme][p.numero].rgm===p.rgm)delete state.reservados[p.uniforme][p.numero];
+  } else if(novoStatus==='confirmado'){
+    state.reservados[p.uniforme][p.numero]={status:'confirmado',rgm:p.rgm,nome:p.nome};
+  }
+  state.pedidos[i].status=novoStatus;salvar();renderAdmin();
+}
+
+function renderNumeros(){
+  limparExpirados();
+  ['basquete','volei'].forEach(tipo=>{
+    const el=document.getElementById('nums-'+tipo);
+    const res=state.reservados[tipo];
+    const nums=Object.keys(res).sort((a,b)=>+a-+b);
+    if(!nums.length){el.innerHTML='<span style="font-size:13px;color:var(--muted)">Nenhum número reservado</span>';return;}
+    el.innerHTML=nums.map(n=>`
+      <div>
+        <div class="num-chip ${res[n].status}">#${n}</div>
+        <div class="num-label">${(res[n].nome||'').split(' ')[0]}</div>
+      </div>
+    `).join('');
+  });
+}
+
+function salvarConfig(){
+  const preco=parseFloat(document.getElementById('cfg-preco').value);
+  const tempo=parseInt(document.getElementById('cfg-tempo').value);
+  const senha=document.getElementById('cfg-senha').value;
+  if(isNaN(preco)||preco<=0){alert('Preço inválido.');return;}
+  if(isNaN(tempo)||tempo<1){alert('Tempo inválido.');return;}
+  state.config.preco=preco;state.config.tempo=tempo;
+  if(senha)state.config.senha=senha;
+  salvar();alert('Configurações salvas com sucesso!');
+}
+
+function exportarCSV(){
+  if(!state.pedidos.length){alert('Nenhum pedido para exportar.');return;}
+  const header=['ID','Data','Hora','RGM','Nome','Email','Uniforme','Nome no Uniforme','Genero','Tamanho','Numero','Status','Comprovante','Preco'];
+  const rows=state.pedidos.map(p=>[p.id,p.data,p.hora,p.rgm,p.nome,p.email,p.uniforme,p.nomeUniforme,p.genero,p.tamanho,p.numero,p.status,p.comprovante||'',p.preco]);
+  const csv=[header,...rows].map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='pedidos_uniformes.csv';a.click();
+  URL.revokeObjectURL(url);
+}
+
+function limparTodos(){
+  if(!confirm('Tem certeza? Isso apagará TODOS os pedidos e reservas.'))return;
+  state.pedidos=[];state.reservados={basquete:{},volei:{}};salvar();renderAdmin();
+}
+
+// Limpeza automática de reservas expiradas
+setInterval(limparExpirados,15000);
+</script>
+</body>
+</html>
